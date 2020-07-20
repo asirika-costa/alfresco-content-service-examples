@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+
+<beans>
+  
+    <bean id="redact.scheduledjob.actions.ScheduledJobExecuter"
+    	class="com.asirika.policy.AutoRedactScheduledJobExecuter">
+  		<property name="serviceRegistry">
+      		<ref bean="ServiceRegistry" />
+      	</property>
+        <property name="enabled">
+			<value>${redact.scheduledjob.enabled}</value>
+	    </property> 
+		<property name="parentNodeId" value="${redact.parentnodeId}"/>
+	  	<property name="readactPattern" value="${redact.pattern}"/>
+	    <property name="folderCheck" value="${redact.folder.check}"/>
+   </bean>
+
+	<bean id="redact.scheduledjob.jobDetail" 
+	      class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+	  	<property name="jobClass">
+	      	<value>com.asirika.policy.AutoRedactScheduledJob</value>
+	  	</property>
+	 	 <property name="jobDataAsMap">
+	      	<map>
+	          	<entry key="jobExecuter" value-ref="redact.scheduledjob.actions.ScheduledJobExecuter" />
+	          	<entry key="jobLockService" value-ref="jobLockService" />
+	      	</map>
+	  	</property>
+	</bean>
+
+	<bean id="redact.scheduledjob.trigger" 
+	       class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+	    <property name="jobDetail" ref="redact.scheduledjob.jobDetail" />
+	    <property name="cronExpression" value="${redact.scheduledjob.cronexpression}" />
+	</bean>
+
+
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+			  <property name="triggers">
+			      <list>
+			          <ref bean="redact.scheduledjob.trigger"/>
+			      </list>
+			  </property>
+	 </bean>
+
+</beans>
