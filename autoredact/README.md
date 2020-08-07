@@ -34,7 +34,7 @@ redact.scheduledjob.cronexpression=0 * * * * ?
 redact.scheduledjob.enabled=true
 ```
 
-3. Deply the jar file into tocat/webapps/WEB-INF/lib
+3. Deply the jar file into tomcat/webapps/WEB-INF/lib
 
 4. Restart Content (ACS Server).
 
